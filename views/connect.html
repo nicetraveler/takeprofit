@@ -1,0 +1,12 @@
+<script>
+
+var target = window.opener;
+if (target) {
+	window.close();
+} else {
+	target = window;
+}
+
+target.location.href = '/index.php';
+
+</script>

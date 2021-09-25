@@ -1,0 +1,45 @@
+#auth {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	height: 34px;
+	line-height: 33px;
+	margin: auto;
+	overflow: hidden;
+}
+
+#auth.higher {
+	height: 68px;
+}
+
+label {
+	display: inline-block;
+	width: 50%;
+	text-align: right;
+	border-bottom: 1px solid transparent;
+	margin-bottom: 0;
+}
+
+input {
+	outline: none;
+	border: none;
+	border-bottom: 1px solid transparent;
+}
+
+input.invalid {
+	border-color: red;
+}
+
+input[type=submit] {
+	display: none;
+}
+
+#extra {
+	position: absolute;
+	bottom: 1rem;
+	left: 0;
+	right: 0;
+	text-align: center;
+}	

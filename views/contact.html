@@ -1,0 +1,16 @@
+<?php
+
+$this->title = "Контакты";
+
+?>
+
+<h1>{PAGETITLE}</h1>
+
+<form action=""  method="post">
+	<p><input type="text" name="name" value="{name}"><span>{name_error}</span></p>
+	<p><input type="text" name="email" value="{email}"><span>{email_error}</span></p>
+	<p><input type="password" name="password" value="{password}"><span>{password_error}</span></p>
+	<p><input type="text" name="extra" value="{extra}"><span>{extra_error}</span></p>
+	<p><textarea name="body">{body}</textarea><span>{body_error}</span></p>
+	<input type="submit">
+</form>
