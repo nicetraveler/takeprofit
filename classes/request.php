@@ -18,7 +18,12 @@ class request
 	{
 		return strtolower($_SERVER['REQUEST_METHOD']);
 	}
-	
+
+    public function json_expected()
+    {
+        return preg_match("/json/", $_SERVER['HTTP_ACCEPT']);
+    }
+
 	public function data()
 	{
 		$body = array_filter($_SERVER, function($key) {

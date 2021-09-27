@@ -10,22 +10,21 @@
 <body>
 
 	<div class="top bar">
-<?php
-
-	session_start();
-
-	$name = $_SESSION['name'] ?? null;
-	echo "<div style='float: left;'>", $name, "</div>\n";
-	echo "<div style='text-align: right;'><a href='login.php'>", ($name)? "Выход" : "Вход" ,"</a></div>\n";
-
-?>
+		<div class="state">{NAME}</div>
+		<a href="login.php">{LOGIN}</a>
 	</div>
 
-	<div class="centerfold">
-		{CONTENT}
+	<div class="centerfold">{CONTENT}</div>
+
+	<div class="status bar">
+		<div class="state">{TASKS}</div>
+		<div class="action"><a href="symbols.php">{SYMBOLS}</a></div>
 	</div>
 
-	<div class="status bar"></div>	
+	<div class="popup">
+		<a class="action" href="symbols.php">Обновить сейчас</a>
+		<p class="detail">{UPDATE}</p>
+	</div>
 
 </body>
 </html>

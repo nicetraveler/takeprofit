@@ -19,7 +19,7 @@ class Login extends \Classes\Controller
 			header('Location: /index.php');
 			return;
 		}
-		throw new \Exception(401);
+		throw new \Exception("Unauthorized", 401);
 	
 	}
 }

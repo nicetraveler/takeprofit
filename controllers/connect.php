@@ -43,7 +43,10 @@ class Connect extends \Classes\Controller
 				'code' => $data['code']
 			);
 
-			$access = $this->request(self::OAUTH2_AUTH_SERVER, $params);
+            $header = array(
+                "Content-Type: application/x-www-form-urlencoded",
+            );
+            $access = $this->request(self::OAUTH2_AUTH_SERVER, $header, http_build_query($params));
 			if (array_key_exists("code", $access))
 				$_SESSION['token'] = $access->code;
 
@@ -51,8 +54,11 @@ class Connect extends \Classes\Controller
 		}
 		
 		if (isset($_SESSION['token'])) {
-
-			$user = $this->request(self::OAUTH2_API_SERVER . '?user');
+            $header = array(
+                "Content-Type: application/x-www-form-urlencoded",
+                'Authorization: Bearer ' . $_SESSION['token'],
+            );
+			$user = $this->request(self::OAUTH2_API_SERVER . '?user', $header);
 			if (array_key_exists("error", $user))
 				return "ОШИБКА ". $user->error. ": ". $user->message;
 

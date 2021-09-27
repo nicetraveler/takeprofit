@@ -21,17 +21,17 @@ class Router
 	{
 		$path = $this->request->path();
 		$callback = $this->routes[$path] ?? false;
-	
+
 		$view  = new View();
 		if ($callback===false) {
-			throw new \Exception (404);
-			
+			throw new \Exception ("Not found", 404);
+
 		} elseif (is_string($callback)) {
 			$view->load($callback);
 			return $view->render();
 			
 		} elseif (is_array($callback)) {
-			$callback[0] = new $callback[0]($view, $callback[1]);	// Ñîçäàåò èíñòàíñ êëàññà, ÷òîáû èñïîëüçîâàòü äëÿ íåãî $this
+			$callback[0] = new $callback[0]($view, $callback[1]);	// Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµÑ‚ Ğ¸Ğ½ÑÑ‚Ğ°Ğ½Ñ ĞºĞ»Ğ°ÑÑĞ°, Ñ‡Ñ‚Ğ¾Ğ±Ñ‹ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ´Ğ»Ñ Ğ½ĞµĞ³Ğ¾ $this
 			$callback[1] = "process";
 			$params = $this->request->data();
 		}

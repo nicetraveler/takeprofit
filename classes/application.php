@@ -29,11 +29,15 @@ class Application
 	public function run()
 	{
 		try {
-			echo $this->router->get();
-		
+            echo $this->router->get();
+
+        } catch (\PDOException $error) {
+            $controller = new \Controllers\Error(new View, "error.html");
+            echo $controller->process(new \Exception($error->getMessage(), 400));
+
 		} catch (\Exception $error) {
 			$controller = new \Controllers\Error(new View, "error.html");
-			echo $controller->process($error->getMessage());
+ 			echo $controller->process($error);
 		}
 	}
 	

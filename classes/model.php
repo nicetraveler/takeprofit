@@ -63,8 +63,9 @@ class Model
 	
 	public function sql($sql, $params=[])
 	{
-		$statement = Application::$INSTANCE->db->prepare($sql);
-		$statement->execute($params);
-		return $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement = Application::$INSTANCE->db->prepare($sql);
+        $statement->execute($params);
+        return $statement->fetch(\PDO::FETCH_ASSOC);
+
 	}
 }

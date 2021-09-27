@@ -36,6 +36,7 @@ $app = new Classes\Application(dirname(__DIR__));
 $app->router->set('/index.php', "index.html");
 $app->router->set('/login.php', [Controllers\Login::class, "login.html"]);
 $app->router->set('/connect.php', [Controllers\Connect::class, "connect.html"]);
+$app->router->set('/symbols.php', [Controllers\Symbols::class, "symbols.html"]);
 $app->router->set('/test.php', function() { return "Hello world";});
 
 $app->run();

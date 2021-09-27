@@ -3,4 +3,26 @@
 $this->title = "Главная"
 
 ?>
-<h1>Главная страница</h1>
+
+<h1>{PAGETITLE}</h1>
+
+<div id="symbols">
+    <div class="symbol">
+        <p class="switch">
+            <span>BTCUSDT</span>
+            <input type="checkbox" id="switch"><label for="switch">Toggle</label>
+        </p>
+        <p class="detail">Событий нет</p>
+    </div>
+
+    <div class="symbol">
+        <p class="switch">
+            <a href="#">Добавить символ</a>
+        </p>
+        <p class="detail">
+            <select name="symbols">
+                <option value="BNBUSDT">BNBUSDT</option>
+            </select>
+        </p>
+    </div>
+</div>
