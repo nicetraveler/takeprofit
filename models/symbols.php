@@ -18,7 +18,7 @@ class Symbols extends \Classes\Model
     public function sync($revision)
     {
         $this->sql("DELETE FROM symbols");
-        $qmarks = "(?, ?, ?, ?)". str_repeat(", (?, ?, ?, ?)", count($this->symbols)-1);
+        $qmarks = "(?, ?, ?, ?)". str_repeat(", (?, ?, ?, ?)", count($this->symbols)/4-1);
         $this->sql("INSERT INTO symbols (symbol, pair, contractType, status) VALUES $qmarks", $this->symbols);
         $this->sql("UPDATE symbols SET revision=:revision", array('revision'=> $revision));
 

@@ -1,28 +1,34 @@
-<?php
+<div id="main">
 
-$this->title = "Главная"
+    <div id="symbols">
+        <div class="symbol">
+            <p class="switch">
+                <span>BTCUSDT</span>
+                <input type="checkbox" id="switch"><label for="switch">Toggle</label>
+            </p>
+            <p class="detail">Событий нет</p>
+        </div>
 
-?>
-
-<h1>{PAGETITLE}</h1>
-
-<div id="symbols">
-    <div class="symbol">
-        <p class="switch">
-            <span>BTCUSDT</span>
-            <input type="checkbox" id="switch"><label for="switch">Toggle</label>
-        </p>
-        <p class="detail">Событий нет</p>
+        <div class="symbol">
+            <p class="switch">
+                <a href="#">Добавить символ</a>
+            </p>
+            <p class="detail">
+                <select name="symbols">
+                    <option value="BNBUSDT">BNBUSDT</option>
+                </select>
+            </p>
+        </div>
     </div>
 
-    <div class="symbol">
-        <p class="switch">
-            <a href="#">Добавить символ</a>
-        </p>
-        <p class="detail">
-            <select name="symbols">
-                <option value="BNBUSDT">BNBUSDT</option>
-            </select>
-        </p>
-    </div>
+</div>
+
+<div class="status bar">
+    <div class="state">{TASKS}</div>
+    <div class="action"><a href="symbols/update.html">{SYMBOLS}</a></div>
+</div>
+
+<div class="popup">
+    <a class="action" href="symbols/update.html">Обновить сейчас</a>
+    <p class="detail">{UPDATE}</p>
 </div>

@@ -1,19 +1,8 @@
-<?php
-
-session_start();
-unset($_SESSION['name']);
-unset($_SESSION['code']);
-unset($_SESSION['token']);
-
-$this->template = "";
-$this->title = "Вход";
-	
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>{PAGETITLE}</title>
+	<title>Вход</title>
 	<link rel="shortcut icon" href="#">
 	<link rel="stylesheet" href="css/login.css">
 	<script src="js/login.js"></script>
@@ -29,7 +18,7 @@ $this->title = "Вход";
 	</form>
 
 	<div id="extra">
-		<a href="connect.php" rel="external">Войти через сервер 188.225.58.61</a>
+		<a href="login/remote.html" rel="external">Войти через сервер 188.225.58.61</a>
 	</div>
 	
 </body>

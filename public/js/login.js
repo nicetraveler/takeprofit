@@ -26,7 +26,7 @@ function func() {
 	auth.addEventListener("submit", function(e) {
 		e.preventDefault();
 		
-		fetch('login.php', {
+		fetch('login.html', {
 			method:"POST",
 			headers: {
 				"Authorization": 'Basic '+btoa(usr.value+':'+pwd.value)
@@ -35,7 +35,7 @@ function func() {
 		}).then(function(response) {
 			if (!response.ok)
 				throw response.status;
-			window.location.href = 'index.php';
+			window.location.href = 'index.html';
 
 		}).catch(function(error) {
 			pwd.className += " invalid";

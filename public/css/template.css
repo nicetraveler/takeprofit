@@ -1,0 +1,36 @@
+body {
+	height: 100vh;	/* чтобы не ставить 100% у родителя html, т.к. 100% - относительно родителя, 100vh безотносительно */
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+a:hover {
+	text-decoration: none;
+}
+
+.bar {
+	min-height: 33px;
+    line-height: 33px;
+    white-space: nowrap;
+    margin: 0;
+	padding: 0 15px;
+}
+.top.bar {
+	background-color: black;
+    color: white;
+	display: flex;
+	flex-direction: row;
+}
+.top.bar .state {
+	flex-grow: 1;
+}
+.top.bar a {
+	color: white;
+}
+
+.centerfold {
+	flex-grow: 1;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+}

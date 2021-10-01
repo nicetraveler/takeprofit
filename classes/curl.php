@@ -1,33 +1,15 @@
 <?php
 
-//Контроллер
+//Удаленные запросы
 
 namespace Classes;
 
-class Controller
+class Curl
 {
-	public View $view;
-	
-	public function __construct(View $view, $source)
-	{
-		$this->view = $view;
-		$this->view->load($source);
-	}
-	
-	public function process($data)
-	{
-        $params = array();
-		$this->output($params);
-	}
-	
-	public function output($params=[])
-	{
-		return $this->view->render($params);
-	}
-	
+
 	public function request($url, $header=[], $body=[])
 	{
-		$header = array_merge($header, array('Accept: application/json'));
+		$header = array_merge($header, array('accept: application/json'));
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

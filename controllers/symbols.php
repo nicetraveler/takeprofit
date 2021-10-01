@@ -2,20 +2,26 @@
 //обновление символов
 namespace Controllers;
 
-class Symbols extends \Classes\Controller
+use Classes\Application;
+
+class Symbols
 {
     private const EXCHANGE_INFO = "https://testnet.binancefuture.com/fapi/v1/exchangeInfo";
     private const SERVER_TIME = "https://testnet.binancefuture.com/fapi/v1/time";
 
-    public function process($data)
+    public function process()
     {
-        $response = $this->request(self::EXCHANGE_INFO);
-        $symbols = new \Models\Symbols($response["symbols"]);
+        Application::$instance->params["SYMBOLS"] = "Символы на 16.09.2021";
+        Application::$instance->params["UPDATE"] = "Обновлено: 16.09.2021 15:00:14";
+    }
 
-        $response = $this->request(self::SERVER_TIME);
-        $symbols->sync(round($response["serverTime"]/1000));
+    public function update($data)
+    {
+ //       $response = $this->request(self::EXCHANGE_INFO);
+ //       $symbols = new \Models\Symbols($response["symbols"]);
 
-        return $this->output();
+ //       $response = $this->request(self::SERVER_TIME);
+ //       $symbols->sync(round($response["serverTime"]/1000));
 
     }
 }

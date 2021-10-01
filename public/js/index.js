@@ -1,6 +1,4 @@
-window.onload = func;
-
-function func() {
+window.addEventListener('load', function() {
 
     let openers = document.querySelectorAll(".status.bar .action a");
     for (i = 0; i < openers.length; i++)
@@ -16,7 +14,7 @@ function func() {
             }
         });
 
-    let updater = document.querySelector(".popup a[href='symbols.php']");
+    let updater = document.querySelector(".popup a[href='symbols/update.html']");
     updater.addEventListener("click", function(e) {
         e.preventDefault();
         let detail = this.parentNode.querySelector(".detail");
@@ -30,7 +28,7 @@ function func() {
         }).then(function(response) {
             if (!response.ok)
                 return response.text().then(function(text) {throw new Error(text)});
-            window.location.href = 'index.php';
+            window.location.href = 'index.html';
 
         }).catch(function(error) {
             detail.innerText = error.message;
@@ -38,4 +36,4 @@ function func() {
         });
     });
 
-}
+});

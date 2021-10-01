@@ -6,7 +6,7 @@ class request
 {
 	public function path()
 	{
-		$path = preg_replace("/^http?\:\/\/|\/$/i", "/index.php", $_SERVER['REQUEST_URI']) ?? '/index.php';
+		$path = preg_replace("/^http?\:\/\/|\/$/i", "/index.html", $_SERVER['REQUEST_URI']) ?? '/index.html';
 		$pos = strpos($path, '?');
 		if ($pos===false) {
 			return $path;

@@ -2,29 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="stylesheet" href="css/index.css">
-	<script src="js/index.js"></script>
 	<title>Мое приложение</title>
-
+	<link rel="stylesheet" href="css/template.css">
+	{CONTENT-CSS}
+	<script type="text/javascript" src="js/template.js"></script>
+	{CONTENT-SCRIPT}
 </head>
 <body>
 
 	<div class="top bar">
 		<div class="state">{NAME}</div>
-		<a href="login.php">{LOGIN}</a>
+		<a href="login.html">{LOGIN}</a>
 	</div>
 
 	<div class="centerfold">{CONTENT}</div>
-
-	<div class="status bar">
-		<div class="state">{TASKS}</div>
-		<div class="action"><a href="symbols.php">{SYMBOLS}</a></div>
-	</div>
-
-	<div class="popup">
-		<a class="action" href="symbols.php">Обновить сейчас</a>
-		<p class="detail">{UPDATE}</p>
-	</div>
 
 </body>
 </html>
