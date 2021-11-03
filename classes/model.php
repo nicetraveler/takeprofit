@@ -61,11 +61,11 @@ class Model
 		return $description;
 	}
 	
-	public function sql($sql, $params=[])
+	public static function sql($sql, $params=[])
 	{
         $statement = Application::$db->prepare($sql);
         $statement->execute($params);
-        return $statement->fetch(\PDO::FETCH_ASSOC);
+        return $statement->fetchall(\PDO::FETCH_ASSOC);
 
 	}
 }

@@ -11,8 +11,11 @@ class Application
     public static Application $instance;
     public static \PDO $db;
 
+    public string $title = "no title";
+    public string $token = "";
     public array $params = [];
-    private string $content = "no content set";
+
+    private string $content = "no content";
 
     public function init()
     {
@@ -25,11 +28,12 @@ class Application
         self::$db = new \PDO($dsn, $user, $password, $options);
 
         session_start();
+        $this->token = $_SESSION['token']?? "";
         $this->params = array(
             "NAME"=> $_SESSION['name'] ?? null,
             "LOGIN"=> $_SESSION['name']? "Выход": "Вход",
+            "STATUS"=> "",
         );
-
 
         self::$instance = $this;
 
@@ -68,6 +72,10 @@ class Application
     {
         $request = new Request();
         $path = $request->path();
+
+        if ($request->fetched())
+            $this->template("");
+
         $callback = self::$routes[$path] ?? false;
 
         if ($callback===false) {
@@ -78,10 +86,6 @@ class Application
         }
 
         call_user_func($callback, $request->data());
-
-        if ($request->json_expected()) {
-            $this->template("");
-        }
         $this->load($path);
 
     }
@@ -115,25 +119,31 @@ class Application
             $this->content = ob_get_clean();
         }
 
+        $css = "css". str_replace(".html", ".css", $filename);
+        $script = "js". str_replace(".html", ".js", $filename);
+
         $template = self::$namespaces["Views"]. "/". self::$config["template"];
         if (is_file($template)) {
             ob_start();
             include $template;
             $this->content = str_replace("{CONTENT}", $this->content, ob_get_clean());
 
-            $css = "css". str_replace(".html", ".css", $filename);
             $this->params["CONTENT-CSS"] = is_file(self::$namespaces["Public"]. "/$css")? "<link rel=\"stylesheet\" href=\"$css\">" : "";
-
-            $script = "js". str_replace(".html", ".js", $filename);
             $this->params["CONTENT-SCRIPT"] = is_file(self::$namespaces["Public"]. "/$script")? "<script type=\"text/javascript\" src=\"$script\"></script>" : "";
+            $this->params["TITLE"] = $this->title;
 
         }
 
+        header("ETag: ".rawurlencode($this->title));  // Заголовки принимают только одну кодировку ISO-8859-1
+
+        if (is_file(self::$namespaces["Public"]. "/$script"))
+            header("Content-Location: /$script");  // JS подключается отдельно, если используется fetch
     }
 
 
     public function show()
     {
+
         foreach($this->params as $key=>$value) {
             $$key = $value;	//	$param = $value когда $key='param'
             $this->content = str_replace("{{$key}}", $value, $this->content);
@@ -141,6 +151,25 @@ class Application
 
         echo $this->content;
 
+    }
+
+
+    public function curl($url, $header=[], $body=[])
+    {
+        $header = array_merge(array('accept: application/json'), $header);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);			// для возврата результата в виде строки, вместо прямого вывода в браузер
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        if (!empty($body)) curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        $response = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close ($ch);
+
+        if ($code==200) return json_decode($response, true);
+
+        throw new \Exception("curl error: ". strip_tags($response), $code);
     }
 
 }

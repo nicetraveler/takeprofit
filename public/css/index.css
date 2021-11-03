@@ -1,109 +1,31 @@
-
-#main {
+.quotes {
     flex-grow: 1;
     overflow-y: auto;
 }
-
-#symbols {
-    width: 175px;
-    margin: 15px;
+.quotes table {
+    width: auto;
 }
-#symbols .symbol {
-    background-color: white;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    margin-bottom: 15px;
+.quotes table tr td {
+    padding: 3px 10px;
+    text-align: right;
+    border: none;
 }
-#symbols .symbol .switch {
-    margin: 0;
-    padding: 15px;
+.quotes table tr td:first-child {
+    border-right: 1px solid gray;
 }
-#symbols .symbol .detail {
-    margin: 0;
-    padding: 15px;
-    border-top: 1px solid lightgray;
-    color: lightgray;
+.quotes .ask td:first-child {
+    background-color: #ffcccb;
 }
-#symbols select[name='symbols'] {
-    height: 24px;
-    width: 100%;
+.quotes .bid td:first-child {
+    background-color: lightgreen;
 }
-
-.symbol input[type=checkbox] {
-    height: 0;
-    width: 0;
-    visibility: hidden;
+.quotes table tr td:nth-child(2) {
+    padding-left: 0;
+    width: 100px;
 }
-.symbol label {
-    float: right;
-    cursor: pointer;
-    text-indent: -9999px;
-    width: 37px;
-    height: 14px;
-    margin-top: 2px;
-    border-radius: 7px;
-    background-color: gray;
-    position: relative;
-}
-.symbol label:after {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 0;
-    width: 18px;
-    height: 18px;
-    border-radius: 9px;
-    border: 1px solid gray;
-    background-color: #ffffff;
-    transition: 0.3s;
-}
-.symbol input:checked + label {
-    background-color: darkgreen;
-}
-.symbol input:checked + label:after {
-    left: 100%;
-    transform: translateX(-100%);
-}
-.symbol label:active:after {
-    width: 26px;
-}
-
-.status.bar {
-    background-color: lightgray;
-    border-top: 1px solid gray;
-    display: flex;
-    flex-direction: row;
-}
-.status.bar .state {
-    flex-grow: 1;
-}
-.popup {
-    display: none;
-    position: absolute;
-    bottom: 48px;
-    right: 0;
-    min-width: 25vw;
-    background-color: lightgray;
-    border: 1px solid gray;
-    border-radius: 4px;
-    border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-.popup.active {
-    display: block;
-}
-.popup .action {
-    display: block;
-    margin: 0;
-    padding: 10px 33px;
-}
-.popup .detail {
-    margin: 0;
-    padding: 10px 33px;
-    border-top: 1px solid gray;
-    color: gray;
-}
-.popup .detail.warning {
-    color: red;
+.quotes table tr td:nth-child(2) div {
+    height: 16px;
+    min-width: 4px;
+    max-width: 200%;
+    background-color: orange;
 }

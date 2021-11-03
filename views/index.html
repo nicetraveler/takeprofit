@@ -1,34 +1,26 @@
-<div id="main">
+<?php
+$this->title = "Главная";
+?>
 
-    <div id="symbols">
-        <div class="symbol">
-            <p class="switch">
-                <span>BTCUSDT</span>
-                <input type="checkbox" id="switch"><label for="switch">Toggle</label>
-            </p>
-            <p class="detail">Событий нет</p>
-        </div>
+<h2>Все символы</h2>
 
-        <div class="symbol">
-            <p class="switch">
-                <a href="#">Добавить символ</a>
-            </p>
-            <p class="detail">
-                <select name="symbols">
-                    <option value="BNBUSDT">BNBUSDT</option>
-                </select>
-            </p>
-        </div>
+<div class="commandbar">
+    <div class="command">
+        <form action="/symbols/update.html"><button>Обновить</button></form>
+        <form action="/symbols/get.html" class="editor default"><button>Изменить</button></form>
+        <form action="/symbols/show.html" class="editor"><button>Открыть</button></form>
     </div>
-
+    <div class="filter">
+        <input type="text" name="find" placeholder="Найти символ">
+    </div>
 </div>
 
-<div class="status bar">
-    <div class="state">{TASKS}</div>
-    <div class="action"><a href="symbols/update.html">{SYMBOLS}</a></div>
+<div class="informer"></div>
+
+<div class="fixed">
+    <table class="th"><tr>{HEAD}<th></th></tr></table>
 </div>
 
-<div class="popup">
-    <a class="action" href="symbols/update.html">Обновить сейчас</a>
-    <p class="detail">{UPDATE}</p>
+<div class="scrollable">
+    <table class="td formdata">{SYMBOLS}</table>
 </div>

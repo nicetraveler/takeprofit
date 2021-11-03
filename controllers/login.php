@@ -8,9 +8,9 @@ class Login
 {
     private const OAUTH2_CLIENT_ID = "qocMBQg1P17CBcdVsJizsN";
     private const OAUTH2_CLIENT_SECRET = "qocMBQg1P17CBcdVsJizsNPnlGbTU4fvlGxAszmzB5";
-    private const OAUTH2_AUTH_SERVER = "http://188.225.58.61/audit/connect/start.php";
+    private const OAUTH2_AUTH_SERVER = "http://188.225.58.61/audit/connect/index.php";
     private const OAUTH2_API_SERVER = "http://188.225.58.61/audit/connect/exec/api.php";
-    private const OAUTH2_THIS_PAGE = "https://takeprofit.space/login.html";
+    private const OAUTH2_THIS_PAGE = "https://takeprofit.space/login/remote.html";
 
     public function process($data)
 	{
@@ -23,12 +23,13 @@ class Login
 		if (empty($data))
             return;
 
-		$access = new \Models\Access();		
-		$access->set($data);
-	
-		if ($row = $access->get()) {
-			$_SESSION['name'] = $row['name'];
-			header('Location: /index.html');
+		$access = new \Models\Access();
+        $token = $access->set($data);
+        foreach($access->get($token) as $row) {
+            $_SESSION['token'] = $row['token'];
+            $_SESSION['name'] = $row['name'];
+            if (!isset($data['PHP_AUTH_USER']))
+			    header('Location: /index.html');
 			return;
 		}
 		throw new \Exception("Unauthorized", 401);
@@ -70,9 +71,9 @@ class Login
             $header = array(
                 "Content-Type: application/x-www-form-urlencoded",
             );
-            $access = $this->request(self::OAUTH2_AUTH_SERVER, $header, http_build_query($params));
+            $access = Application::$instance->curl(self::OAUTH2_AUTH_SERVER, $header, http_build_query($params));
             if (array_key_exists("code", $access))
-                $_SESSION['token'] = $access->code;
+                $_SESSION['token'] = $access["code"];
 
             header('Location: ' . self::OAUTH2_THIS_PAGE);
         }
@@ -82,12 +83,51 @@ class Login
                 "Content-Type: application/x-www-form-urlencoded",
                 'Authorization: Bearer ' . $_SESSION['token'],
             );
-            $user = $this->request(self::OAUTH2_API_SERVER . '?user', $header);
+            $user = Application::$instance->curl(self::OAUTH2_API_SERVER . '?user', $header);
             if (array_key_exists("error", $user))
-                return "ОШИБКА " . $user->error . ": " . $user->message;
+                return "ОШИБКА " . $user["error"] . ": " . $user["message"];
 
-            $_SESSION['name'] = $user->name . "@188.225.58.61";
+            $data['PHP_AUTH_USER'] = $user["name"] . "@188.225.58.61";
+            $this->process($data);
+
         }
 
+    }
+
+    public function get()
+    {
+
+        $cols = array(
+            "name"=> "Наименование", "secret"=> "Пароль", "_account"=> "Аккаунт", "_apikey"=> "Ключ API", "_secret"=> "Секретный ключ"
+        );
+
+        $user = new \Models\Access();
+        foreach($user->get(Application::$instance->token) as $row) {
+            Application::$instance->title = $row["name"];
+            $_SESSION['name'] = $row['name'];
+
+            $checked = !is_null($row['_account']);
+            Application::$instance->params["FIELDS"] = "";
+            Application::$instance->params["USERFIELDS"] = "<div class='switch'><input type='checkbox' name='switch'";
+            Application::$instance->params["USERFIELDS"] .= ($checked? " checked": ""). "><label></label><span>Настройки binance</span></div>\n";
+
+            foreach ($cols as $col => $val) {
+                $userdata = preg_match("/^_/", $col);
+                Application::$instance->params[$userdata ? "USERFIELDS" : "FIELDS"] .= "<dt><label>{$val}:</label><input type='";
+                Application::$instance->params[$userdata? "USERFIELDS" : "FIELDS"] .= ($col=="secret"? "password": "text"). "' name='$col' value='{$row[$col]}'";
+                Application::$instance->params[$userdata? "USERFIELDS" : "FIELDS"] .= ((!$userdata && !$row['remote']) || ($userdata && $checked)? "": "disabled"). "></dt>\n";
+            }
+
+        }
+
+    }
+
+    public function set($user)
+    {
+        if (array_key_exists("secret", $user) && !$user["secret"])
+            throw new \Exception("Bad Request: Пароль не задан", 400);
+
+        \Models\Access::update($user, Application::$instance->token);
+        $this->get();
     }
 }

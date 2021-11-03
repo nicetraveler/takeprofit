@@ -3,19 +3,40 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Мое приложение</title>
-	<link rel="stylesheet" href="css/template.css">
+	<link rel="stylesheet" href="/css/template.css">
 	{CONTENT-CSS}
-	<script type="text/javascript" src="js/template.js"></script>
+	<script type="text/javascript" src="/js/d3.v5.js"></script>
+	<script type="text/javascript" src="/js/template.js"></script>
 	{CONTENT-SCRIPT}
 </head>
 <body>
 
 	<div class="top bar">
-		<div class="state">{NAME}</div>
-		<a href="login.html">{LOGIN}</a>
+		<a href="/login/get.html" class="user">{NAME}</a>
+		<a href="/login.html" class="state">{LOGIN}</a>
 	</div>
 
-	<div class="centerfold">{CONTENT}</div>
+	<div class="centerfold">
+		<div id="bg-1c">
+			<ul>
+				<li class="nav-item"><a href="symbols/show.html?BTCUSDT" class="action active">BTCUSDT</a></li>
+				<li class="nav-item"><a href="symbols/show.html?BTCUSDT" class="action">BTCUSDT</a></li>
+				<li class="nav-item"><a href="symbols/show.html?ETHUSDT" class="action">ETHUSDT</a></li>
+			</ul>
+		</div>
+
+		<div id="view">
+			<div class="popup"></div>
+			<div id="breadcrumb">
+				<div class="breadcrumb-item active"><span>{TITLE}</span></div>
+			</div>
+			<div id="pages" tabindex="0">
+				<div class="page active">{CONTENT}</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="status bar">{STATUS}</div>
 
 </body>
 </html>

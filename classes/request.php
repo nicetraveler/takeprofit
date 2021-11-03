@@ -19,9 +19,9 @@ class request
 		return strtolower($_SERVER['REQUEST_METHOD']);
 	}
 
-    public function json_expected()
+    public function fetched()
     {
-        return preg_match("/json/", $_SERVER['HTTP_ACCEPT']);
+        return !preg_match("/\*\/\*/", $_SERVER['HTTP_ACCEPT']);
     }
 
 	public function data()

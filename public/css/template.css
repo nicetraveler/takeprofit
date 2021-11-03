@@ -1,6 +1,8 @@
 body {
 	height: 100vh;	/* чтобы не ставить 100% у родителя html, т.к. 100% - относительно родителя, 100vh безотносительно */
 	margin: 0;
+	font-family: sans-serif;
+	font-size: 14px;
 	display: flex;
 	flex-direction: column;
 }
@@ -14,23 +16,359 @@ a:hover {
     white-space: nowrap;
     margin: 0;
 	padding: 0 15px;
+	display: flex;
+	flex-direction: row;
 }
 .top.bar {
 	background-color: black;
     color: white;
-	display: flex;
-	flex-direction: row;
-}
-.top.bar .state {
-	flex-grow: 1;
 }
 .top.bar a {
 	color: white;
+}
+.top.bar .state {
+	flex-grow: 1;
+	text-align: right;
 }
 
 .centerfold {
 	flex-grow: 1;
 	overflow-y: auto;
 	display: flex;
+	flex-direction: row;
+}
+
+.status.bar {
+	background-color: lightgray;
+	color: black;
+	border-top: 1px solid gray;
+}
+.status.bar a {
+	color: black;
+}
+
+#bg-1c {
+	background-color: rgb(255, 235, 155);
+	position: relative;
+}
+#bg-1c::after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 1px;
+	height: 100%;
+	background-color: rgb(205, 185, 105);
+	content: "";
+	cursor: move;
+}
+#bg-1c ul {
+	list-style: none;
+	padding: 0;
+}
+#bg-1c ul li {
+	margin-bottom: 1rem;
+}
+#bg-1c .nav-item a {
+	line-height: 33px;
+	white-space: nowrap;
+	padding: 0;
+	padding: 0 33px;
+	color: black;
+	text-decoration: none;
+	display: block;
+}
+#bg-1c .nav-item a:hover {
+	text-decoration: underline;
+}
+#bg-1c .nav-item a.active {
+	background-color: rgb(255, 255, 242);
+}
+
+#view {
+	flex-grow: 1;
+	display: flex;
 	flex-direction: column;
+	position: relative;
+}
+
+.popup {
+	display: none;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	left: 0;
+	bottom: 10px;
+	background-color: #fffff2;
+	border: 1px solid #cdb969;
+	border-left: none;
+}
+.popup.active {
+	display: block;
+}
+
+#breadcrumb {
+	background-color: rgb(242, 242, 242);
+	min-height: 44px;
+	white-space: nowrap;
+	overflow: hidden;
+	border-bottom: 1px solid rgb(160, 160, 160);
+	border-radius: 0;
+	padding: 0;
+	margin: 0;
+}
+#breadcrumb .breadcrumb-item {
+	position: relative;
+	float: left;
+	height: 100%;
+	padding: 0;
+	line-height: 44px;
+	overflow: hidden;
+	background-color: transparent;
+	border-right: 1px solid rgb(160, 160, 160);
+	color: black;
+	cursor: default;
+	text-decoration: none;
+}
+#breadcrumb .breadcrumb-item.active {
+	background-color: rgb(252, 252, 252);
+}
+#breadcrumb .breadcrumb-item::before {
+	content: "";
+	padding-right: 0;
+}
+#breadcrumb .breadcrumb-item.active::after {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	content: "";
+	background-color: green;
+	width: 100%;
+	height: 2px;
+}
+#breadcrumb .breadcrumb-item span {
+	padding: 0 15px;
+}
+#breadcrumb .breadcrumb-item a {
+	float: right;
+	height: 100%;
+	width: 20px;
+	line-height: 44px;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+}
+#breadcrumb .breadcrumb-item a:hover {
+	background-color: rgb(242, 242, 242);
+}
+
+#pages {
+	outline: none;
+	flex-grow: 1;
+	overflow-y: auto;
+	display: flex;
+	padding: 24px;
+	position: relative;
+}
+.page {
+	display: none;
+	flex-grow: 1;
+	overflow-y: auto;
+}
+.page.active {
+	display: flex;
+	flex-direction: column;
+}
+.page .close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	border-radius: 50%;
+}
+.page .close:hover {
+	background-color: rgb(242, 242, 242);
+}
+.page h2 {
+	margin: 0;
+	margin-bottom: 24px;
+	font-size: x-large;
+/*	color: rgb(0, 150, 70);	*/
+}
+
+.page .commandbar {
+	margin-bottom: 24px;
+	display: flex;
+	flex-direction: row;
+}
+.page .commandbar .command {
+	flex-grow: 1;
+}
+.page .commandbar button, .page .commandbar input {
+	padding: 3px 10px;
+	margin-right: 7px;
+}
+.page .commandbar form {
+	display: inline;
+}
+.page .commandbar .default button {
+	font-weight: bold;
+}
+.page .informer {
+	display: none;
+	padding: 10px;
+	margin-bottom: 24px;
+	background-color: rgb(255, 243, 205);
+	color: rgb(133, 100, 4);
+}
+.page .informer.warning {
+	display: block;
+	background-color: darkred;
+	color: white;
+}
+.page .informer.note {
+	 display: block;
+	 background-color: darkorange;
+	 color: white;
+ }
+
+.page table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+.page table.th th {
+	padding: 5px 10px;
+	background-color: rgb(242, 242, 242);
+	font-weight: normal;
+	text-align: left;
+	cursor: default;
+	border-right: 1px solid rgb(222, 222, 222);
+}
+.page .fixed {
+	border: 1px solid rgb(160, 160, 160);
+	border-bottom: none;
+}
+.page table.th th:last-child {
+	padding: 0;
+	border-right: none;
+	width: 17px;
+}
+.page .scrollable {
+	flex-grow: 1;
+	overflow-y: scroll;
+	border: 1px solid rgb(160, 160, 160);
+	border-top: none;
+	background-color: rgb(222, 222, 222);
+}
+.page table.td td {
+	border: 1px solid rgb(222, 222, 222);
+	border-left: none;
+	border-bottom: none;
+}
+.page table.td  tr:nth-child(odd) {
+	background-color: white;
+}
+.page table.td tr:nth-child(even) {
+	background-color: rgb(250, 250, 250);
+}
+.page table td {
+	border: 1px solid rgb(222, 222, 222);
+	padding: 7px 10px;
+	white-space: nowrap;
+}
+.page table.td tr.active {
+	background-color: rgb(255, 240, 165);
+}
+.page table.td td.active {
+	background-color: rgb(255, 220, 30);
+}
+.page table .id {
+	display: none;
+}
+.page table.td tr.filtered {
+	display: none;
+}
+.page table.td td .match {
+	font-weight: bold;
+	color: green;
+}
+
+dl {
+	margin: 0;
+	margin-bottom: 16px;
+	float: left;
+}
+dl dt {
+	clear: both;
+	text-align: right;
+	line-height: 25px;
+	margin-bottom: 8px;
+}
+dl dt label {
+	float: left;
+	padding-right: 15px;
+}
+dl dt input {
+	padding: 3px;
+	width: 25vw;
+}
+
+hr {
+	clear: both;
+	margin: 24px 0;
+	border: none;
+	height: 1px;
+	background-color: gray;
+}
+.switch {
+	margin-bottom: 24px;
+}
+.switch span {
+	font-weight: bold;
+	/*    color: rgb(0, 150, 70);   */
+}
+
+.switch input[type=checkbox] {
+	height: 0;
+	width: 0;
+	visibility: hidden;
+	display: none;
+}
+.switch label {
+	float: right;
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 37px;
+	height: 14px;
+	margin-top: 2px;
+	border-radius: 7px;
+	background-color: gray;
+	position: relative;
+}
+.switch label:after {
+	content: '';
+	position: absolute;
+	top: -3px;
+	left: 0;
+	width: 18px;
+	height: 18px;
+	border-radius: 9px;
+	border: 1px solid gray;
+	background-color: #ffffff;
+	transition: 0.3s;
+}
+.switch input:checked + label {
+	background-color: rgb(0, 150, 70);
+}
+.switch input:checked + label:after {
+	left: 100%;
+	transform: translateX(-100%);
+}
+.switch label:active:after {
+	width: 26px;
 }
