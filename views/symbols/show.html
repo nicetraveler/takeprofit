@@ -1,22 +1,22 @@
-<h2>{CAPTION}</h2>
+<h2>{TITLE}</h2>
 
 <div class="commandbar">
     <div class="command">
-        <form class="ctl connector"><button>Включить</button></form>
+        <form action="/symbols/snapshot.html" class="ctl connector"><button>Включить</button></form>
     </div>
 </div>
 
 <div class="informer"></div>
 
-<form action="/symbols/snapshot.html" class="ctl snapshot">
-    <input type="hidden" name="id" value="{SYMBOL}">
-    <input type="hidden" name="base" value="{BASE}">
+<form class="formdata {SYMBOL}">
+    <img src="/css/loading.gif" onload="onimgload(this);">
+    {USERFIELDS}
 </form>
 
 <div class="quotes">
-    <img src="/css/loading.gif" onload="onimgload(this);">
     <table class="{SYMBOL}">
         <tbody class="ask"></tbody>
+        <tbody class="market"></tbody>
         <tbody class="bid"></tbody>
     </table>
 </div>
