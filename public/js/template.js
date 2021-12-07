@@ -2,7 +2,22 @@ window.onload = init;
 
 function init() {
 
-    let pages = new Pageset();
+    let address = document.getElementById("socket");
+    let listenKey = document.getElementById("listenKey");
+    if (listenKey.value) {
+        let socket = new WebSocket(address.value + listenKey.value);
+
+        socket.addEventListener("message", function (event) {
+            let json = JSON.parse(event.data);
+            if (!json["e"]) return;
+
+            console.log(json);
+
+        });
+
+    }
+
+    let pages = new Pageset(location.href);
 
     let user = document.querySelector(".top.bar .user");
     user.addEventListener("click", function(e) {
@@ -24,26 +39,33 @@ function init() {
 
     let nav = document.getElementById("pages");
     nav.addEventListener("submit", function(e) {
-        if(e.target.classList.contains("ctl"))
-            return;
 
         e.preventDefault();
+        let form = document.querySelector(".page.active .formdata");
+
+        if(!e.target.classList.contains("ctl"))
+            return;
 
         if (e.target.classList.contains("editor")) {
             pages.edit(e.target.action);
             return;
         }
 
-        let form = document.querySelector(".page.active .formdata");
-        pages.save(e.target.action, form);
+        if (e.target.classList.contains("saver")) {
+            pages.save(e.target.action, form);
+            return;
+        }
 
     });
 
     nav.addEventListener("click", function(e) {
+
         if (e.target.classList.contains("close")) {
             e.preventDefault();
             pages.close(e.target.href);
         }
+
+                                            // toggle на разных страницах
         if (e.target.tagName=="LABEL") {    // label без for не самокликается, а c for нельзя сделать несколько элементов из-за уникальности id
             e.preventDefault();
             e.target.previousSibling.checked = !e.target.previousSibling.checked;
@@ -51,23 +73,7 @@ function init() {
             for (i=0; i<input.length; i++)
                 input[i].disabled = !e.target.previousSibling.checked;
         }
-    });
 
-    nav.addEventListener("input", function(e) {
-        if (e.target.name=="find") {
-            let tbody = document.querySelector(".page.active table.td tbody");
-            let regex = new RegExp("<span class=['\"]match['\"]>([^<>]*)</span>", "gi");
-            tbody.innerHTML = tbody.innerHTML.replace(regex, "$1");
-            regex = new RegExp("(?<=<td>[^<]*)(" + e.target.value + ")(?=[^>]*</td>)", "gi");
-            tbody.innerHTML = tbody.innerHTML.replace(regex, "<span class='match'>$1</span>");
-
-            let rows = tbody.querySelectorAll("tr");
-            for (j = 0; j < rows.length; j++) {
-                rows[j].classList.remove("filtered");
-                if (!rows[j].querySelector("span.match") && e.target.value)
-                    rows[j].classList.add("filtered");
-            }
-        }
     });
 
     nav.addEventListener("keyup", function (e) {
@@ -183,131 +189,5 @@ function init() {
                         }
             */
         });
-
-}
-
-//	Набор страниц
-function Pageset() {
-    this.pages = [];
-    this.pages.push(location.href);
-}
-
-//	Открытие заданной страницы
-Pageset.prototype.open = function(href) {
-
-    let active = this.pages.indexOf(href)+1;
-
-    let crumb = document.querySelector("#breadcrumb .breadcrumb-item:nth-child("+ active +")");
-    let container = document.querySelector("#pages .page:nth-child("+ active+ ")");//
-
-    if (active<1) {
-        this.pages.push(href);
-
-        crumb = document.createElement("div");
-        crumb.classList.add("breadcrumb-item");
-        document.querySelector("#breadcrumb").appendChild(crumb);
-        crumb.innerHTML = "<span>Загружается...</span>";
-        crumb.innerHTML += "<a href=\""+href+"\">×</a>";
-
-        container = document.createElement("div");
-        container.classList.add("page");
-        document.querySelector("#pages").appendChild(container);
-        container.innerHTML = "<div class=\"informer\"></div>\n";
-        container.innerHTML += "<a href=\""+href+"\" class=\"close\">×</a>";
-
-        let informer = container.querySelector(".informer");
-        let ok = false;
-        let js = null;
-        fetch(href, {
-            headers: { 'accept': 'text/html' }
-
-        }).then(function(response) {
-            ok = response.ok;
-            js  = response.headers.get('content-location');
-            crumb.querySelector("span").innerText = decodeURIComponent(response.headers.get('etag'));
-            return response.text();
-
-        }).then(function(text) {
-            if (!ok) throw new Error(text);
-            text += "<a href=\""+href+"\" class=\"close\">×</a>";
-            container.innerHTML = text;
-            if (js) {
-                let script = document.createElement("script");
-                script.src = js;
-                document.head.appendChild(script);
-            }
-
-        }).catch(function(error) {
-            informer.innerText = error.message;
-            informer.classList.add("warning");
-        });
-
-    }
-
-    let oldcrumb = document.querySelector(".breadcrumb-item.active");
-    if (oldcrumb) oldcrumb.classList.remove("active");
-    crumb.classList.add("active");
-
-    let oldcontainer = document.querySelector(".page.active");
-    if (oldcontainer) oldcontainer.classList.remove("active");
-    container.classList.add("active");
-
-}
-
-//  Открытие страницы деталей по идентификатору в таблице
-Pageset.prototype.edit = function(action) {
-    let id = document.querySelector(".page.active .formdata .active input[name=id]");
-    if (action && id) this.open(action+"?id="+ id.value);
-}
-
-//  Запись данных активной страницы
-Pageset.prototype.save = function(url, body) {
-    let parameters = {
-        headers: {
-            'accept': 'application/json'
-        }
-    };
-    if (body.tagName=="FORM") {
-        parameters["method"] = "POST";
-        parameters["body"] = new FormData(body);
-    }
-
-    let html = body.innerHTML;
-    body.innerHTML = "";
-    let informer = document.querySelector(".page.active .informer");
-    informer.classList.remove("warning");
-
-    let ok = false;
-    fetch(url, parameters
-    ).then(function(response) {
-        ok = response.ok;
-        return response.text();
-
-    }).then(function(text) {
-        if (!ok) throw new Error(text);
-        body.innerHTML = text;
-
-    }).catch(function(error) {
-        informer.innerText = error.message;
-        informer.classList.add("warning");
-        body.innerHTML = html;
-    });
-}
-
-//	Закрытие страницы
-Pageset.prototype.close = function(href) {
-
-    let index = this.pages.indexOf(href);
-    this.pages.splice(index, 1);
-
-    let crumbs = document.querySelectorAll("#breadcrumb .breadcrumb-item");
-    if (crumbs[index].classList.contains("active"))
-        crumbs[index - 1].classList.add("active");
-    crumbs[index].remove();
-
-    var containers = document.querySelectorAll("#pages .page");
-    if (containers[index].classList.contains("active"))
-        containers[index - 1].classList.add("active");
-    containers[index].remove();
 
 }

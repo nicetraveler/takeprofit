@@ -1,0 +1,1 @@
+C:\"Program Files"\OpenSSH\ssh.exe -L 3306:p512390.mysql.ihc.ru:3306

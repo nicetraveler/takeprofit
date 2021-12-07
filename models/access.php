@@ -1,5 +1,5 @@
 <?php
-
+//модель доступа
 namespace Models;
 
 class Access extends \Classes\Model

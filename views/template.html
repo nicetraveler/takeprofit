@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="/css/template.css">
 	{CONTENT-CSS}
 	<script type="text/javascript" src="/js/d3.v5.js"></script>
+	<script type="text/javascript" src="/js/pageset.js"></script>
 	<script type="text/javascript" src="/js/template.js"></script>
 	{CONTENT-SCRIPT}
 </head>
@@ -36,7 +37,12 @@
 		</div>
 	</div>
 
-	<div class="status bar">{STATUS}</div>
+	<div class="status bar">
+		<input type="hidden" id="listenKey" name="listenKey" value="{KEY}">
+		<input type="hidden" id="socket" name="socket" value="{SOCKET}">
+		<label for="wallet">Текущий баланс:</label>
+		<input type="text" id="wallet" name="wallet" value="{WALLET}" disabled>
+	</div>
 
 </body>
 </html>

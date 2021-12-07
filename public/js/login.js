@@ -1,4 +1,4 @@
-window.onload = func;
+window.onload = func;	// по-русски
 
 function func() {
 

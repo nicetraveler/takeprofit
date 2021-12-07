@@ -2,21 +2,37 @@
 
 <div class="commandbar">
     <div class="command">
-        <form action="/symbols/snapshot.html" class="ctl connector"><button>Включить</button></form>
+        <form action="order.html" class="ctl"><button>Продать</button></form>
+        <form action="order.html" class="ctl"><button>Купить</button></form>
+        <form action="symbols/snapshot.html" class="connector default"><button>Включить</button></form>
     </div>
 </div>
 
 <div class="informer"></div>
 
-<form class="formdata {SYMBOL}">
-    <img src="/css/loading.gif" onload="onimgload(this);">
-    {USERFIELDS}
-</form>
+<div class="wrap">
 
-<div class="quotes">
-    <table class="{SYMBOL}">
-        <tbody class="ask"></tbody>
-        <tbody class="market"></tbody>
-        <tbody class="bid"></tbody>
-    </table>
+    <div class="trade {SYMBOL}">
+        <form action="position.html" class="formdata">
+            <input type='hidden' name='id' value='{SYMBOL}'>
+            {USERFIELDS}
+            <dl>
+                <dt><label>Стоп для продажи:</label><input type='text' name='sl_sell'></dt>
+                <dt><label>Цена сделки:</label><input type='text' name='price'></dt>
+                <dt><label>Стоп для покупки:</label><input type='text' name='sl_buy'></dt>
+                <hr>
+                <dt><label>Риск:</label><input type='text' name='risk' value="{RISK}"></dt>
+                <dt><label>Депозит:</label><input type='text' name='deposit' value="{DEPOSIT}"></dt>
+                <dt><label>Плечо:</label><input type='text' name='leverage' value="{LEVERAGE}" disabled></dt>
+            </dl>
+        </form>
+        <svg class="chart"></svg>
+        <img src="/css/loading.gif" width="40px" height="40px" onload="tradeLoad(this);">
+    </div>
+
+
+    <div class="quotes {SYMBOL}">
+        <img src="/css/loading.gif" onload="bookLoad(this);">
+        <table><tbody></tbody></table>
+    </div>
 </div>

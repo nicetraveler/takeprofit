@@ -46,6 +46,10 @@ a:hover {
 .status.bar a {
 	color: black;
 }
+.status.bar input {
+	background-color: transparent;
+	border: none;
+}
 
 #bg-1c {
 	background-color: rgb(255, 235, 155);

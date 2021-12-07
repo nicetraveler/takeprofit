@@ -11,30 +11,31 @@ class Symbols
     private const DEPTH_SNAPSHOT = "https://fapi.binance.com/fapi/v1/depth?limit=1000";
     private const TRADES_SNAPSHOT = "https://fapi.binance.com/fapi/v1/trades?limit=500";
 
-    public function list()
+    private function list()
     {
         $cols = ["pair" => "Пара", "contractType" => "Тип", "status" => "Статус", "_revision" => "Дата"];
 
         Application::$instance->params["HEAD"] = "<th class='id'></th>";
-        array_walk($cols, function($value) {
+        array_walk($cols, function ($value) {
             Application::$instance->params["HEAD"] .= "<th>{$value}</th>";
         });
 
         $symbols = \Models\Symbols::list();
-        Application::$instance->params["SYMBOLS"] = "";
         foreach ($symbols as $symbol) {
             Application::$instance->params["SYMBOLS"] .= "<tr>\n";
             Application::$instance->params["SYMBOLS"] .= "<td class='id'><input type='hidden' name='id' value='{$symbol["symbol"]}'></td>\n";
-            array_walk($cols, function($value, $key) use ($symbol) {
+            array_walk($cols, function ($value, $key) use ($symbol) {
                 Application::$instance->params["SYMBOLS"] .= "<td>{$symbol[$key]}</td>";
             });
-           Application::$instance->params["SYMBOLS"] .= "</tr>\n";
+            Application::$instance->params["SYMBOLS"] .= "</tr>\n";
         }
-
-        Application::$instance->params["STATUS"] = "Текущий баланс: 1000000";
-
     }
 
+    public function process()
+    {
+        Application::$instance->params["SYMBOLS"] = "";
+        $this->list();
+    }
 
     public function update()
     {
@@ -44,6 +45,7 @@ class Symbols
         $response = Application::$instance->curl(self::SERVER_TIME);
         $symbols->sync(round($response["serverTime"]/1000));
 
+        Application::$instance->params["SYMBOLS"] = "";
         $this->list();
     }
 
@@ -52,7 +54,7 @@ class Symbols
     {
         $cols = ["pair" => "Пара", "pricePrecision" => "Точность цены", "quantityPrecision" => "Точность количества",
             "minPrice" => "Минимальная цена", "minQty" => "Минимальное количество",
-            "_name" => "Наименование", "_base" => "Отображаемое количество", "_depth" => "Глубина", "_scale" => "Масштаб"];
+            "_name" => "Наименование", "_base" => "Отображаемое количество", "_depth" => "Глубина", "_scale" => "Масштаб", "_full" => "Нулевые объемы"];
         $symbols = \Models\Symbols::list(["symbol"=> $symbol["id"]], Application::$instance->token);
 
         foreach ($symbols as $row) {
@@ -87,14 +89,17 @@ class Symbols
 
     public function show($symbol)
     {
-        $cols = ["pricePrecision", "quantityPrecision", "minPrice", "minQty", "_base", "_depth", "_scale"];
+        $cols = ["pricePrecision", "quantityPrecision", "minPrice", "minQty", "_base", "_depth", "_scale", "_full"];
         $symbols = \Models\Symbols::list(["symbol"=> $symbol["id"]], Application::$instance->token);
 
         foreach ($symbols as $row) {
             Application::$instance->title = $row['_name']?? $row['pair'];
             Application::$instance->params["TITLE"]  = $row['pair'];
             Application::$instance->params["SYMBOL"]  = $row['symbol'];
-            Application::$instance->params["USERFIELDS"] = "<input type='hidden' name='id' value='{$symbol["id"]}'>\n";
+            Application::$instance->params["RISK"]  = $row['_risk'];
+            Application::$instance->params["DEPOSIT"]  = $row['_deposit'];
+            Application::$instance->params["LEVERAGE"]  = $row['_leverage'];
+            Application::$instance->params["USERFIELDS"] = "";
             foreach($cols as $key) {
                 Application::$instance->params["USERFIELDS"] .= "<input type='hidden' name='{$key}' value='{$row[$key]}'>\n";
             }
@@ -109,4 +114,5 @@ class Symbols
 
         Application::$instance->params["RESPONSE"] = json_encode(array_merge($depth, ["trades"=> $trades]));
     }
+
 }

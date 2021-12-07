@@ -19,6 +19,8 @@ class Application
 
     public function init()
     {
+        self::$instance = $this;
+
         list($dsn, $user, $password) = file(self::$config["database"], FILE_IGNORE_NEW_LINES);
         $options = array(
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
@@ -32,10 +34,11 @@ class Application
         $this->params = array(
             "NAME"=> $_SESSION['name'] ?? null,
             "LOGIN"=> $_SESSION['name']? "Выход": "Вход",
-            "STATUS"=> "",
+            "SOCKET"=> "",
+            "KEY"=> "",
+            "WALLET"=> "",
         );
-
-        self::$instance = $this;
+       \Controllers\Account::key($this->token);
 
     }
 

@@ -1,3 +1,34 @@
+.wrap {
+    flex-grow: 1;
+    display:flex;
+    flex-direction: row;
+    overflow-y: auto;
+}
+.wrap .trade {
+    flex-grow: 1;
+    display:flex;
+    flex-direction: column;
+}
+.wrap .trade .formdata {
+    flex-grow: 1;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #333;
+}
+.axis .grid-line {
+    stroke: #000;
+    stroke-opacity: 0.2;
+}
+.axis text {
+    font: 10px Verdana;
+}
+
+img.inactive {
+    display: none;
+}
+
 .quotes {
     flex-grow: 1;
     overflow-y: auto;
@@ -7,25 +38,48 @@
 }
 .quotes table tr td {
     padding: 3px 10px;
-    text-align: right;
     border: none;
 }
-.quotes table tr td:first-child {
+.quotes table tr td:first-child, .quotes tr td:nth-child(3) {
     border-right: 1px solid gray;
 }
-.quotes .ask td:first-child {
-    background-color: #ffcccb;
+.quotes tr td:nth-child(3) {
+    text-align: right;
 }
-.quotes .bid td:first-child {
+.quotes table tr td:last-child {
+    border-left: 1px solid gray;
+}
+.quotes .price {
+    color: gray;
+}
+.quotes .sl {
+    color: gray;
+}
+.quotes .ask {
+    background-color: #ffcccb;
+    color: black;
+}
+.quotes .bid {
     background-color: lightgreen;
+    color: black;
 }
 .quotes table tr td:nth-child(2) {
-    padding-left: 0;
     width: 100px;
+    padding-left: 0;
 }
-.quotes table tr td:nth-child(2) div {
+.quotes table tr td:nth-child(5) {
+    width: 100px;
+    padding-right: 0;
+}
+.quotes table tr td div {
     height: 16px;
     min-width: 4px;
     max-width: 200%;
     background-color: orange;
+}
+.quotes table tr td div.sl {
+    background-color: lightgray;
+}
+.quotes table tr td:nth-child(5) div {
+    float: right;
 }

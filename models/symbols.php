@@ -59,10 +59,12 @@ class Symbols extends \Classes\Model
             $where[] = "s.$key=:$key";
 
          return self::sql("SELECT s.*, FROM_UNIXTIME(s.revision, \"%d.%m.%Y %H:%i:%s\") AS _revision,
-             _s.symbol AS _symbol, _s.name AS _name, _s.base AS _base, _s.depth AS _depth, _s.scale AS _scale
+             _s.symbol AS _symbol, _s.name AS _name, _s.base AS _base, _s.depth AS _depth, _s.scale AS _scale, _s.full AS _full,
+             _o.risk AS _risk, _o.deposit AS _deposit, _o.leverage AS _leverage
             FROM symbols AS s
             LEFT JOIN users AS u ON token='{$token}'
             LEFT JOIN user_symbols AS _s ON s.symbol=_s.symbol AND _s.user=u.id
+            LEFT JOIN user_orders AS _o ON s.symbol=_o.symbol AND _o.user=u.id
             ". (count($where)>0? "WHERE ": ""). implode(" && ", $where), $filter);
 
     }
