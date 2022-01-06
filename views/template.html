@@ -13,24 +13,18 @@
 <body>
 
 	<div class="top bar">
-		<a href="/login/get.html" class="user">{NAME}</a>
-		<a href="/login.html" class="state">{LOGIN}</a>
+		<a href="login/get.html" class="user">{NAME}</a>
+		<a href="login.html" class="state">{LOGIN}</a>
 	</div>
 
 	<div class="centerfold">
-		<div id="bg-1c">
-			<ul>
-				<li class="nav-item"><a href="symbols/show.html?BTCUSDT" class="action active">BTCUSDT</a></li>
-				<li class="nav-item"><a href="symbols/show.html?BTCUSDT" class="action">BTCUSDT</a></li>
-				<li class="nav-item"><a href="symbols/show.html?ETHUSDT" class="action">ETHUSDT</a></li>
-			</ul>
-		</div>
+		<form id="bg-1c" action="account/order.html">{MENU}</form>
 
 		<div id="view">
-			<div class="popup"></div>
-			<div id="breadcrumb">
+			<form id="breadcrumb" action="account.html">
 				<div class="breadcrumb-item active"><span>{TITLE}</span></div>
-			</div>
+				<img src="/css/loading.gif" onload="posLoad('account/position.html', this);">
+			</form>
 			<div id="pages" tabindex="0">
 				<div class="page active">{CONTENT}</div>
 			</div>
@@ -38,10 +32,12 @@
 	</div>
 
 	<div class="status bar">
-		<input type="hidden" id="listenKey" name="listenKey" value="{KEY}">
-		<input type="hidden" id="socket" name="socket" value="{SOCKET}">
-		<label for="wallet">Текущий баланс:</label>
-		<input type="text" id="wallet" name="wallet" value="{WALLET}" disabled>
+		<form id="userdata" action="account/init.html">
+			<input type="hidden" id="socket" name="socket">
+			<label for="balance">Текущий баланс:</label>
+			<input type="text" id="balance" name="balance" disabled>
+		</form>
+		<form id="event-handler" action="account/event.html"></form>
 	</div>
 
 </body>

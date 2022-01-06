@@ -14,6 +14,7 @@ class Application
     public string $title = "no title";
     public string $token = "";
     public array $params = [];
+    public array $account = [];
 
     private string $content = "no content";
 
@@ -34,11 +35,8 @@ class Application
         $this->params = array(
             "NAME"=> $_SESSION['name'] ?? null,
             "LOGIN"=> $_SESSION['name']? "Выход": "Вход",
-            "SOCKET"=> "",
-            "KEY"=> "",
-            "WALLET"=> "",
+            "MENU"=> "",
         );
-       \Controllers\Account::key($this->token);
 
     }
 
@@ -134,7 +132,6 @@ class Application
             $this->params["CONTENT-CSS"] = is_file(self::$namespaces["Public"]. "/$css")? "<link rel=\"stylesheet\" href=\"$css\">" : "";
             $this->params["CONTENT-SCRIPT"] = is_file(self::$namespaces["Public"]. "/$script")? "<script type=\"text/javascript\" src=\"$script\"></script>" : "";
             $this->params["TITLE"] = $this->title;
-
         }
 
         header("ETag: ".rawurlencode($this->title));  // Заголовки принимают только одну кодировку ISO-8859-1
@@ -157,7 +154,7 @@ class Application
     }
 
 
-    public function curl($url, $header=[], $body=[])
+    public function curl($url, $header=[], $body=[], $method="auto")
     {
         $header = array_merge(array('accept: application/json'), $header);
 
@@ -166,6 +163,8 @@ class Application
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);			// для возврата результата в виде строки, вместо прямого вывода в браузер
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         if (!empty($body)) curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        if ($method!="auto") curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+//      curl_setopt($curl, CURLOPT_DELETE, true);
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close ($ch);

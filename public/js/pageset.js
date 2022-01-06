@@ -2,6 +2,7 @@
 function Pageset(initialpage) {
     this.pages = [];
     this.pages.push(initialpage);
+    this.freeze = false;
 }
 
 
@@ -57,6 +58,8 @@ Pageset.prototype.open = function(href) {
 
     }
 
+    if (this.freeze) return;
+
     let oldcrumb = document.querySelector(".breadcrumb-item.active");
     if (oldcrumb) oldcrumb.classList.remove("active");
     crumb.classList.add("active");
@@ -108,7 +111,6 @@ Pageset.prototype.save = function(url, body) {
         body.innerHTML = html;
     });
 }
-
 
 //	Закрытие страницы
 Pageset.prototype.close = function(href) {

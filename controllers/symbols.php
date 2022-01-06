@@ -9,7 +9,6 @@ class Symbols
     private const EXCHANGE_INFO = "https://fapi.binance.com/fapi/v1/exchangeInfo";
     private const SERVER_TIME = "https://fapi.binance.com/fapi/v1/time";
     private const DEPTH_SNAPSHOT = "https://fapi.binance.com/fapi/v1/depth?limit=1000";
-    private const TRADES_SNAPSHOT = "https://fapi.binance.com/fapi/v1/trades?limit=500";
 
     private function list()
     {
@@ -35,6 +34,12 @@ class Symbols
     {
         Application::$instance->params["SYMBOLS"] = "";
         $this->list();
+
+        Application::$instance->params["MENU"] = "";
+        $symbols = \Models\Symbols::user(Application::$instance->token);
+        foreach ($symbols as $row)
+            Application::$instance->params["MENU"] .= "<a href='#' class='action' target='{$row["symbol"]}'>{$row["symbol"]}</a>\n";
+
     }
 
     public function update()
@@ -53,7 +58,7 @@ class Symbols
     public function get($symbol)
     {
         $cols = ["pair" => "Пара", "pricePrecision" => "Точность цены", "quantityPrecision" => "Точность количества",
-            "minPrice" => "Минимальная цена", "minQty" => "Минимальное количество",
+            "minPrice" => "Минимальная цена", "tickSize" => "Прирост цены", "minQty" => "Минимальное количество", "stepSize" => "Прирост количества", "notional" => "Минимальный депозит",
             "_name" => "Наименование", "_base" => "Отображаемое количество", "_depth" => "Глубина", "_scale" => "Масштаб", "_full" => "Нулевые объемы"];
         $symbols = \Models\Symbols::list(["symbol"=> $symbol["id"]], Application::$instance->token);
 
@@ -87,32 +92,10 @@ class Symbols
         $this->get($symbol);
     }
 
-    public function show($symbol)
+    public function depth($symbol)
     {
-        $cols = ["pricePrecision", "quantityPrecision", "minPrice", "minQty", "_base", "_depth", "_scale", "_full"];
-        $symbols = \Models\Symbols::list(["symbol"=> $symbol["id"]], Application::$instance->token);
-
-        foreach ($symbols as $row) {
-            Application::$instance->title = $row['_name']?? $row['pair'];
-            Application::$instance->params["TITLE"]  = $row['pair'];
-            Application::$instance->params["SYMBOL"]  = $row['symbol'];
-            Application::$instance->params["RISK"]  = $row['_risk'];
-            Application::$instance->params["DEPOSIT"]  = $row['_deposit'];
-            Application::$instance->params["LEVERAGE"]  = $row['_leverage'];
-            Application::$instance->params["USERFIELDS"] = "";
-            foreach($cols as $key) {
-                Application::$instance->params["USERFIELDS"] .= "<input type='hidden' name='{$key}' value='{$row[$key]}'>\n";
-            }
-        }
-
-    }
-
-    public function snapshot($symbol)
-    {
-        $trades = Application::$instance->curl(self::TRADES_SNAPSHOT. "&symbol=". $symbol["id"]);
         $depth = Application::$instance->curl(self::DEPTH_SNAPSHOT. "&symbol=". $symbol["id"]);
-
-        Application::$instance->params["RESPONSE"] = json_encode(array_merge($depth, ["trades"=> $trades]));
+        Application::$instance->params["RESPONSE"] = json_encode($depth);
     }
 
 }

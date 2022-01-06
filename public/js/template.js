@@ -1,23 +1,7 @@
 window.onload = init;
+const pages = new Pageset(location.href);   // для доступа в posLoad()
 
 function init() {
-
-    let address = document.getElementById("socket");
-    let listenKey = document.getElementById("listenKey");
-    if (listenKey.value) {
-        let socket = new WebSocket(address.value + listenKey.value);
-
-        socket.addEventListener("message", function (event) {
-            let json = JSON.parse(event.data);
-            if (!json["e"]) return;
-
-            console.log(json);
-
-        });
-
-    }
-
-    let pages = new Pageset(location.href);
 
     let user = document.querySelector(".top.bar .user");
     user.addEventListener("click", function(e) {
@@ -36,6 +20,82 @@ function init() {
             pages.close(e.target.href);
         }
     });
+
+    let menu = document.getElementById("bg-1c");
+    menu.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if(e.target.classList.contains("action")) {
+            let popups = document.querySelectorAll("#view .popup");
+            for (a=0; a<popups.length; a++)
+                popups[a].classList.remove("active");
+
+            let selected = e.target.classList.contains("active");
+
+            let li = menu.querySelectorAll("a");
+            for (j = 0; j <li.length; j++)
+                li[j].classList.remove("active");
+
+            if (selected) return;
+            e.target.classList.add("active");
+
+            let popup = document.querySelector("#view .popup."+e.target.target);
+            if (!popup) {
+                popup = document.createElement("div");
+                popup.classList.add("popup", e.target.target);
+                let view = document.getElementById("view");
+                view.prepend(popup);
+            }
+            popup.classList.add("active");
+            fill(popup, e.target);
+        }
+
+    });
+
+    let view = document.getElementById("view");
+    view.addEventListener("change", function(e) {
+
+        risk(e.target.closest(".formdata"), 0);
+
+    });
+
+    view.addEventListener("submit", function(e) {
+
+        if (e.target.classList.contains("cmd")) {
+            e.preventDefault();
+
+            let body = new FormData();
+            let popup = e.target.closest(".popup");
+            let formdata = popup.querySelectorAll(".formdata input");
+            for(x=0; x<formdata.length; x++)
+                body.set(formdata[x].name, formdata[x].value);
+
+            popup.innerHTML = "";
+            let ok = false;
+            fetch(e.target.action, {
+                headers: {
+                    'accept': 'application/json',
+                },
+                "method": "POST",
+                "body": body
+
+            }).then(function(response) {
+                ok = response.ok;
+                return response.text();
+
+            }).then(function(text) {
+                if (!ok) throw new Error(text);
+                popup.innerHTML = text;
+                risk(popup, 0);
+
+            }).catch(function(error) {
+                popup.innerHTML = error.message;
+            });
+        }
+
+    });
+
+    userStream();
 
     let nav = document.getElementById("pages");
     nav.addEventListener("submit", function(e) {
@@ -65,11 +125,16 @@ function init() {
             pages.close(e.target.href);
         }
 
-                                            // toggle на разных страницах
+        // toggle на разных страницах
         if (e.target.tagName=="LABEL") {    // label без for не самокликается, а c for нельзя сделать несколько элементов из-за уникальности id
             e.preventDefault();
+            let form = document.querySelector(".page.active .formdata");
+            let symbol = form.querySelector("input[name='id']");
+            let on = form.querySelector("input[name='switch']");
+            pin(symbol.value, !on.checked);
+
             e.target.previousSibling.checked = !e.target.previousSibling.checked;
-            let input = document.querySelectorAll(".page.active form input[name^='_']");
+            let input = form.querySelectorAll("input[name^='_']");
             for (i=0; i<input.length; i++)
                 input[i].disabled = !e.target.previousSibling.checked;
         }
@@ -96,6 +161,7 @@ function init() {
         }
 
         let tbody = document.querySelector(".page.active table.td");
+        if (!tbody) return;
 
         let active_td = 0;
         let td = tbody.querySelectorAll("tr.active td");
@@ -171,23 +237,177 @@ function init() {
         });
     }
 
-    let menu = document.querySelectorAll(".nav-item a");
-    for (i = 0; i < menu.length; i++)
-        menu[i].addEventListener("click", function (e) {
-            e.preventDefault();
+}
 
-            this.classList.toggle("active");
+function userStream() {
 
-            /*
-                      let popups = document.querySelectorAll(".popup");
-                        for (j = 0; j < popups.length; j++) {
-                            if (popups[j].querySelector("a[href='"+this.getAttribute("href")+"']")) {
-                                popups[j].classList.toggle("active");
-                                continue;
-                            }
-                            popups[j].classList.remove("active");
-                        }
-            */
-        });
+console.log("key requested");
+    let userdata = document.getElementById("userdata");
 
+    fetch(userdata.action, {
+        method: "GET",
+        headers: {'accept': 'application/json'},
+
+    }).then(function (response) {
+        return response.json();
+
+    }).then(function (json) {
+
+        let balance = document.getElementById("balance");
+        balance.value = json["balance"].join(", ");
+
+        let url = document.getElementById("socket");
+        url.value = json["socket"];
+
+console.log("key received");
+        if (json["listenKey"]) {
+            let socket = new WebSocket(url.value + json["listenKey"]);
+console.log("socket initialized");
+            socket.onopen = function() { console.log("user data stream open"); }
+            socket.onclose = function() { console.log("user data stream close"); }
+            socket.onerror = function() { console.log("user data stream error"); }
+
+            socket.addEventListener("message", function (event) {
+
+                let json = JSON.parse(event.data);
+                if (json["e"] && json["e"] == "listenKeyExpired") {
+                    socket.close();
+                    userStream();
+                    return;
+                }
+
+                updateStrategy(json);
+                window.postMessage(event.data, window.location.href);
+
+            });
+
+        }
+
+    });
+}
+
+function fill(popup, source) {
+
+    let formdata = popup.querySelector(".formdata");
+    if(formdata) return;
+    popup.innerText = "Загружается...";
+
+    let ok = false;
+    fetch(source.parentNode.action+"?id="+source.target, {
+        method: "GET",
+        headers: { 'accept': 'application/json' },
+
+    }).then(function(response) {
+        ok = response.ok;
+        return response.text();
+
+    }).then(function(text) {
+        if (!ok) throw new Error(text);
+        popup.innerHTML = text;
+        risk(popup, 0);
+
+    }).catch(function(error) {
+        popup.innerText = error.message;
+
+    });
+}
+
+function pin(symbol, sync) {
+
+    const menu = document.getElementById("bg-1c");
+    let a = menu.querySelector("a[target='"+symbol+"']");
+    if (a && !sync) menu.removeChild(a);
+    if (a || !sync) return;
+    a = document.createElement("a");
+    a.href = menu.action+ "?id="+symbol;
+    a.target = symbol;
+    a.classList.add("action");
+    a.innerText = symbol;
+    menu.prepend(a);
+}
+
+function risk(form, marketPrice) {
+
+    const pricePrecision = form.querySelector("input[name='pricePrecision']");
+    const f = d3.format(",."+pricePrecision.value+"f");
+
+    let p = form.querySelector("input[name='price']");
+    if (!p) return;
+    p.placeholder = f(marketPrice);
+    let price = p.value? p.value: marketPrice;
+
+    let risk = form.querySelector("input[name='_risk']");
+    let deposit = form.querySelector("input[name='deposit']");
+    let leverage = form.querySelector("input[name='_leverage']");
+
+    let notional = form.querySelector("input[name='notional']");
+    let stepsize = form.querySelector("input[name='stepSize']");
+    let q = form.querySelector("input[name='quantity']");
+    q.placeholder = Math.ceil(notional.value / price / stepsize.value) * stepsize.value;
+    deposit.placeholder = q.placeholder * price / leverage.value;
+
+    let sl_sell = form.querySelector("input[name='sl_sell']");
+    let sl_buy = form.querySelector("input[name='sl_buy']");
+
+    let span = risk.value / (deposit.value? deposit.value: deposit.placeholder) / leverage.value;
+    if (sl_sell.value || sl_buy.value) {
+        span = d3.max([sl_sell.value-price, price-sl_buy.value]);
+    }
+    q.value = Math.round(risk.value / span / price / stepsize.value) * stepsize.value;
+    deposit.value = q.value * price / leverage.value;
+
+    let hi = price*(1+span);
+    let lo = price*(1-span);
+    sl_sell.placeholder = f(hi);
+    sl_buy.placeholder = f(lo);
+
+    let symbol = form.querySelector("input[name='id']");
+    let tr = d3.select(".quotes." + symbol.value+ " table tbody").selectAll("tr");
+    tr.selectAll("td div").attr("class", d=>(d[1]>hi || d[3]<lo? "sl": ""));
+    tr.selectAll("td.amount").attr("class", d=>"amount"+ (d[1]>hi || d[3]<lo? " sl": ""));
+
+}
+
+function updateStrategy(event) {
+    const handle = document.getElementById("event-handler");
+
+    fetch(handle.action, {
+        headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(event)
+    });
+}
+
+function posLoad(source, loader) {
+
+    let informer = document.querySelector(".page.active .informer");
+    informer.classList.remove("warning");
+
+    let ok = false;
+    fetch(source, {
+        headers: { 'accept': 'application/json' },
+
+    }).then(function(response) {
+        ok = response.ok;
+        return ok? response.json(): response.text();
+
+    }).then(function(json) {
+        if (!ok) throw new Error(json);
+
+        let breadcrumb = document.getElementById("breadcrumb");
+        pages.freeze = true;
+        for(c=0; c<json.length; c++)
+            pages.open(breadcrumb.action+"?id="+json[c]);
+        pages.freeze = false;
+
+    }).catch(function(error) {
+        informer.innerText = error.message;
+        informer.classList.add("warning");
+
+    }).finally(function() {
+        loader.parentNode.removeChild(loader);
+    });
 }

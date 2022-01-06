@@ -54,6 +54,7 @@ a:hover {
 #bg-1c {
 	background-color: rgb(255, 235, 155);
 	position: relative;
+	padding-top: 1rem;
 }
 #bg-1c::after {
 	position: absolute;
@@ -65,14 +66,10 @@ a:hover {
 	content: "";
 	cursor: move;
 }
-#bg-1c ul {
-	list-style: none;
-	padding: 0;
-}
-#bg-1c ul li {
+#bg-1c a {
 	margin-bottom: 1rem;
 }
-#bg-1c .nav-item a {
+#bg-1c a {
 	line-height: 33px;
 	white-space: nowrap;
 	padding: 0;
@@ -81,10 +78,10 @@ a:hover {
 	text-decoration: none;
 	display: block;
 }
-#bg-1c .nav-item a:hover {
+#bg-1c a:hover {
 	text-decoration: underline;
 }
-#bg-1c .nav-item a.active {
+#bg-1c a.active {
 	background-color: rgb(255, 255, 242);
 }
 
@@ -96,6 +93,7 @@ a:hover {
 }
 
 .popup {
+	z-index: 999;
 	display: none;
 	position: absolute;
 	top: 10px;
@@ -108,6 +106,10 @@ a:hover {
 }
 .popup.active {
 	display: block;
+}
+
+.popup {
+	padding: 40px;
 }
 
 #breadcrumb {
@@ -164,6 +166,11 @@ a:hover {
 #breadcrumb .breadcrumb-item a:hover {
 	background-color: rgb(242, 242, 242);
 }
+#breadcrumb img {
+	margin: 12px;
+	width: 22px;
+	float: right;
+}
 
 #pages {
 	outline: none;
@@ -204,22 +211,22 @@ a:hover {
 /*	color: rgb(0, 150, 70);	*/
 }
 
-.page .commandbar {
+.commandbar {
 	margin-bottom: 24px;
 	display: flex;
 	flex-direction: row;
 }
-.page .commandbar .command {
+.commandbar .command{
 	flex-grow: 1;
 }
-.page .commandbar button, .page .commandbar input {
+.commandbar button, .commandbar input {
 	padding: 3px 10px;
 	margin-right: 7px;
 }
-.page .commandbar form {
+.commandbar form {
 	display: inline;
 }
-.page .commandbar .default button {
+.commandbar .default button {
 	font-weight: bold;
 }
 .page .informer {

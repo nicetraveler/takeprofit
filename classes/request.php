@@ -30,18 +30,18 @@ class request
 			return preg_match("/^PHP_AUTH_/", $key);
 		}, ARRAY_FILTER_USE_KEY);
 	         	
-		if ($this->method()=="get") {
-			foreach($_GET as $key=>$value) {
-				$body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-			}
-		
-		}
-		if($this->method()=="post") {
-			foreach($_POST as $key=>$value) {
-				$body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-			}
-		
-		}
+        foreach($_GET as $key=>$value) {
+            $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+        }
+
+        foreach($_POST as $key=>$value) {
+            $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+        }
+
+        if (preg_match("/json/", $_SERVER['CONTENT_TYPE'])) {
+            $content = file_get_contents("php://input");
+            $body = array_merge($body, json_decode($content, true));
+        }
 
 		return $body;
 	}
