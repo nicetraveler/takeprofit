@@ -226,8 +226,8 @@ class Account
                 "symbol"=> $position["s"],
                 "side"=> $position["pa"]>0? "SELL": "BUY",
                 "type"=> "LIMIT",
-                "quantity"=> round( abs($position["pa"]) / 2, $orders->settings["quantityPrecision"]),
-                "price"=> round( $tickprice + $span * 3, $orders->settings["pricePrecision"]),
+                "quantity"=> $orders->settings["minQty"],
+                "price"=> round( $tickprice + $span, $orders->settings["pricePrecision"]),
                 "timeInForce" => "GTC",
                 "reduceOnly"=> "true",
             );

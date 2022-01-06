@@ -1,0 +1,20 @@
+<div class="commandbar">
+    <form  action="account/order.html?side=BUY" class="cmd"><button>Купить</button></form>
+    <form  action="account/order.html?side=SELL" class="cmd"><button>Продать</button></form>
+</div>
+
+<form class="formdata">
+    <input type='hidden' name='id' value='{SYMBOL}'>
+    {USERFIELDS}
+    <dl>
+        <dt><label>Стоп для продажи:</label><input type='text' name='sl_sell'></dt>
+        <dt><label>Цена сделки:</label><input type='text' name='price' value="{PRICE}"></dt>
+        <dt><label>Стоп для покупки:</label><input type='text' name='sl_buy'></dt>
+        <hr>
+        <dt><label>Риск:</label><input type='text' name='_risk' value="{RISK}"></dt>
+        <dt><label>Депозит:</label><input type='text' name='deposit'></dt>
+        <dt><label>Плечо:</label><input type='text' name='_leverage' placeholder="{LEVERAGE}" value="{LEVERAGE}" disabled></dt>
+        <hr>
+        <dt><label>Количество:</label><input type='text' name='quantity' disabled></dt>
+    </dl>
+</form>

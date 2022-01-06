@@ -1,0 +1,28 @@
+<h2>{TITLE}</h2>
+
+<div class="commandbar {SYMBOL}">
+    <div class="command">
+        <form class="connector default"><button>Включить</button></form>
+    </div>
+</div>
+
+<div class="informer"></div>
+
+<div class="wrap">
+
+    <form class="settings {SYMBOL}">
+        <input type='hidden' name='id' value='{SYMBOL}'>
+        {USERFIELDS}
+    </form>
+
+    <div class="chart {SYMBOL}">
+        <svg class="chart"></svg>
+        <img src="/css/loading.gif" width="40px" height="40px" onload="chartLoad('account/position.html', '{SYMBOL}', this);">
+    </div>
+
+    <div class="quotes {SYMBOL}">
+        <table><tbody></tbody></table>
+        <img src="/css/loading.gif" onload="bookLoad('symbols/depth.html', '{SYMBOL}', this);">
+    </div>
+
+</div>
